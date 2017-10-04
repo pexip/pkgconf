@@ -83,13 +83,12 @@ pkgconf_exe = executable('pkgconf',
   install : true)
 
 
-kyua_exe = find_program('kyua')
-test('kyua', kyua_exe, args : ['--config=none', 'test', '--kyuafile=' + join_paths(meson.build_root(), 'Kyuafile'), '--build-root=' + meson.build_root()])
-
-
-configure_file(input : 'Kyuafile.in', output : 'Kyuafile', configuration : cdata)
-subdir('tests')
-
+kyua_exe = find_program('kyua', required : false)
+if kyua_exe.found()
+  test('kyua', kyua_exe, args : ['--config=none', 'test', '--kyuafile=' + join_paths(meson.build_root(), 'Kyuafile'), '--build-root=' + meson.build_root()])
+  configure_file(input : 'Kyuafile.in', output : 'Kyuafile', configuration : cdata)
+  subdir('tests')
+endif
 
 install_man('pkgconf.1')
 install_data('pkg.m4', install_dir: 'share/aclocal')
